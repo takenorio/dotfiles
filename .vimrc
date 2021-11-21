@@ -4,6 +4,7 @@
 call plug#begin('~/.vim/plugged')
   Plug 'cocopon/iceberg.vim'
   Plug 'dense-analysis/ale'
+  Plug 'hashivim/vim-terraform'
   Plug 'itchyny/lightline.vim'
   Plug 'jmcantrell/vim-virtualenv'
   Plug 'maximbaz/lightline-ale'
@@ -29,6 +30,7 @@ set number
 set smartcase
 set smartindent
 set splitbelow
+set splitright
 set viminfo=
 
 filetype indent on
@@ -40,6 +42,7 @@ filetype plugin on
 "-----------------------------------------
 autocmd BufRead,BufNewFile *.template set filetype=cloudformation.yaml
 
+autocmd FileType js   setlocal sw=2 sts=2 ts=2 et
 autocmd FileType sh   setlocal sw=2 sts=2 ts=2 et
 autocmd FileType yaml setlocal sw=2 sts=2 ts=2 et
 
@@ -64,11 +67,13 @@ let g:ale_sign_error = 'E'
 let g:ale_sign_warning = 'W'
 
 let g:ale_linters = {
-  \ 'python': ['pylsp'],
+  \ 'python'   : ['pylsp'],
+  \ 'terraform': ['tflint'],
   \ }
 let g:ale_fixers = {
-  \ 'python': ['black', 'isort'],
-  \ 'bash'  : ['shfmt'],
+  \ 'bash'     : ['shfmt'],
+  \ 'python'   : ['black', 'isort'],
+  \ 'terraform': ['terraform'],
   \ }
 
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
