@@ -2,6 +2,8 @@
 " vim-plug
 "-----------------------------------------
 call plug#begin('~/.vim/plugged')
+  Plug 'aliou/bats.vim'
+  Plug 'cespare/vim-toml'
   Plug 'cocopon/iceberg.vim'
   Plug 'dense-analysis/ale'
   Plug 'hashivim/vim-terraform'
@@ -19,7 +21,7 @@ call plug#end()
 set autoindent
 set cursorline
 set expandtab
-set fenc=utf-8
+set fileencoding=utf-8
 set hlsearch
 set ignorecase
 set incsearch
@@ -40,11 +42,15 @@ filetype plugin on
 "-----------------------------------------
 " File type settings
 "-----------------------------------------
-autocmd BufRead,BufNewFile *.template set filetype=cloudformation.yaml
-
-autocmd FileType js   setlocal sw=2 sts=2 ts=2 et
-autocmd FileType sh   setlocal sw=2 sts=2 ts=2 et
-autocmd FileType yaml setlocal sw=2 sts=2 ts=2 et
+augroup file_type
+  autocmd!
+  autocmd BufRead,BufNewFile *.template set filetype=cloudformation.yaml
+  autocmd FileType bats setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType js   setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType sh   setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType vim  setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType yaml setlocal sw=2 sts=2 ts=2 et
+augroup END
 
 
 "-----------------------------------------
@@ -67,7 +73,8 @@ let g:ale_sign_error = 'E'
 let g:ale_sign_warning = 'W'
 
 let g:ale_linters = {
-  \ 'python'   : ['pylsp'],
+  \ 'bash'     : ['bash-language-server', 'shellcheck'],
+  \ 'python'   : ['pyright', 'flake8'],
   \ 'terraform': ['tflint'],
   \ }
 let g:ale_fixers = {
@@ -109,7 +116,10 @@ let g:lightline = {
 "-----------------------------------------
 " NERDTree
 "-----------------------------------------
-autocmd vimenter * NERDTree
+augroup NERDTree
+  autocmd!
+  autocmd vimenter * NERDTree
+augroup END
 
 
 "-----------------------------------------
