@@ -38,18 +38,47 @@ set viminfo=
 filetype indent on
 filetype plugin on
 
+scriptencoding utf-8
+
+
+"-----------------------------------------
+" Highlight multi bytes space
+"-----------------------------------------
+set list
+set listchars=tab:>.,trail:_,eol:↲,extends:>,precedes:<,nbsp:%
+
+"全角スペースをハイライト表示
+function! ZenkakuSpace()
+  highlight ZenkakuSpace cterm=reverse ctermfg=DarkMagenta gui=reverse guifg=DarkMagenta
+endfunction
+
+if has('syntax')
+  augroup ZenkakuSpace
+    autocmd!
+    autocmd ColorScheme       * call ZenkakuSpace()
+    autocmd VimEnter,WinEnter * match ZenkakuSpace /　/
+  augroup END
+  call ZenkakuSpace()
+endif
+
 
 "-----------------------------------------
 " File type settings
 "-----------------------------------------
 augroup file_type
   autocmd!
-  autocmd BufRead,BufNewFile *.template set filetype=cloudformation.yaml
-  autocmd FileType bats setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType js   setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType sh   setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType vim  setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType yaml setlocal sw=2 sts=2 ts=2 et
+  autocmd BufRead,BufNewFile *.template      set filetype=cloudformation.yaml
+  autocmd BufRead,BufNewFile *.template.yml  set filetype=cloudformation.yaml
+  autocmd BufRead,BufNewFile *.template.yaml set filetype=cloudformation.yaml
+
+  autocmd FileType bats       setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType css        setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType javascript setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType json       setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType sh         setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType typescript setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType vim        setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType yaml       setlocal sw=2 sts=2 ts=2 et
 augroup END
 
 
@@ -73,18 +102,26 @@ let g:ale_sign_error = 'E'
 let g:ale_sign_warning = 'W'
 
 let g:ale_linters = {
-  \ 'bash'     : ['bash-language-server', 'shellcheck'],
-  \ 'python'   : ['pyright', 'flake8'],
-  \ 'terraform': ['tflint'],
+  \ 'bash'       : ['bash-language-server', 'shellcheck'],
+  \ 'javascript' : ['deno'],
+  \ 'json'       : ['json-language-server'],
+  \ 'python'     : ['pyright', 'flake8'],
+  \ 'terraform'  : ['tflint'],
+  \ 'typescript' : ['deno'],
   \ }
 let g:ale_fixers = {
-  \ 'bash'     : ['shfmt'],
-  \ 'python'   : ['black', 'isort'],
-  \ 'terraform': ['terraform'],
+  \ 'bash'       : ['shfmt'],
+  \ 'javascript' : ['deno'],
+  \ 'json'       : ['jq'],
+  \ 'python'     : ['black', 'isort'],
+  \ 'terraform'  : ['terraform'],
+  \ 'typescript' : ['deno'],
   \ }
 
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+
+nmap <silent> gj <Plug>(ale_go_to_definition)
 
 
 "-----------------------------------------
@@ -127,3 +164,12 @@ augroup END
 "-----------------------------------------
 let g:winresizer_start_key = '<C-T>'
 let g:winresizer_keycode_cancel = 122
+
+
+"-----------------------------------------
+" cfn-formatter
+"-----------------------------------------
+"augroup cfn-format
+"  autocmd!
+"  autocmd BufWritePost *.template silent !cfn-format -w % 2>/dev/null
+"augroup END
